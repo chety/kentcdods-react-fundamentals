@@ -4,35 +4,44 @@
 import * as React from 'react'
 
 function UsernameForm({onSubmitUsername}) {
-  // 🐨 add a submit event handler here (`handleSubmit`).
-  // 💰 Make sure to accept the `event` as an argument and call
-  // `event.preventDefault()` to prevent the default behavior of form submit
-  // events (which refreshes the page).
-  // 📜 https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault
-  //
-  // 🐨 get the value from the username input (using whichever method
-  // you prefer from the options mentioned in the instructions)
-  // 💰 For example: event.target.elements[0].value
-  // 🐨 Call `onSubmitUsername` with the value of the input
+    const usernameRef = React.useRef(null);
+    const [username, setUsername] = React.useState('')
+    const handleSubmit = (event) => {
+        //Normally react events are synthetic events(Fake ones). If we want to work native one we can use like so
+        // console.log(event.nativeEvent);
+        //console.dir(event.target)
 
-  // 🐨 add the onSubmit handler to the <form> below
+        event.preventDefault();
+        //there are multiple ways to get target element value.
+        // 1- Access via id or name of the element.
+        // 2- Access via elements array index.
+        // 3- Access via react ref object
 
-  // 🐨 make sure to associate the label to the input.
-  // to do so, set the value of 'htmlFor' prop of the label to the id of input
-  return (
-    <form>
-      <div>
-        <label>Username:</label>
-        <input type="text" />
-      </div>
-      <button type="submit">Submit</button>
-    </form>
-  )
+        // onSubmitUsername(event.target.elements.username.value);
+        // onSubmitUsername(event.target.elements[0].value);
+        //onSubmitUsername(usernameRef.current.value);
+        onSubmitUsername(username)
+    }
+
+    const handleUsernameChange = (event) => {
+        const value = event.target.value;
+        setUsername(value.toLocaleLowerCase());
+    }
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <div>
+                <label htmlFor={'username'}>Username:</label>
+                <input type="text" id={'username'}  ref={usernameRef} onChange={handleUsernameChange} value={username}/>
+            </div>
+            <button type="submit" disabled={!username}>Submit</button>
+        </form>
+    )
 }
 
 function App() {
-  const onSubmitUsername = username => alert(`You entered: ${username}`)
-  return <UsernameForm onSubmitUsername={onSubmitUsername} />
+    const onSubmitUsername = username => alert(`You entered: ${username}`)
+    return <UsernameForm onSubmitUsername={onSubmitUsername}/>
 }
 
 export default App
